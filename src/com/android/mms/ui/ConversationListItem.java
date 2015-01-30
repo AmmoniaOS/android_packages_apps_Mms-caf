@@ -32,6 +32,8 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.text.TextUtils;
+import com.android.internal.util.one.PhoneLocation;
+import com.android.internal.util.one.OneUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -60,6 +62,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private TextView mSubjectView;
     private TextView mFromView;
     private TextView mDateView;
+    private TextView mLocationView;
     private View mAttachmentView;
     private View mErrorIndicator;
     private CheckableQuickContactBadge mAvatarView;
@@ -98,6 +101,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         mSubjectView = (TextView) findViewById(R.id.subject);
 
         mDateView = (TextView) findViewById(R.id.date);
+        mLocationView = (TextView) findViewById(R.id.location);
         mAttachmentView = findViewById(R.id.attachment);
         mErrorIndicator = findViewById(R.id.error);
         mAvatarView = (CheckableQuickContactBadge) findViewById(R.id.avatar);
@@ -267,6 +271,11 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         // Register for updates in changes of any of the contacts in this conversation.
         ContactList contacts = conversation.getRecipients();
+
+        // Location
+        if (OneUtils.isSupportLanguage(true)) {
+            mLocationView.setText(PhoneLocation.getCityFromPhone((CharSequence)contacts.get(0).getNumber()));
+        }
 
         if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
             Log.v(TAG, "bind: contacts.addListeners " + this);
