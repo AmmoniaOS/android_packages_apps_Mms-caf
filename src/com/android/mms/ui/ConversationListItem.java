@@ -32,7 +32,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.text.TextUtils;
-import com.android.internal.util.one.PhoneLocation;
 import com.android.internal.util.one.OneUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -274,7 +273,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
 
         // Location
         if (OneUtils.isSupportLanguage(true)) {
-            mLocationView.setText(PhoneLocation.getCityFromPhone((CharSequence)contacts.get(0).getNumber()));
+            mLocationView.setText(OneUtils.getCityFromPhone(contacts.get(0).getNumber()));
         }
 
         if (Log.isLoggable(LogTag.CONTACT, Log.DEBUG)) {
