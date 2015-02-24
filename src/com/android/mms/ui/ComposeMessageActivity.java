@@ -1912,14 +1912,17 @@ public class ComposeMessageActivity extends Activity
                 "color", mAccentColor, accentColor);
         final ObjectAnimator statusBarAnimation = ObjectAnimator.ofInt(getWindow(),
                 "statusBarColor", mStatusBarColor, statusBarColor);
+        final ObjectAnimator NavBarAnimation = ObjectAnimator.ofInt(getWindow(),
+                "navigationBarColor", getWindow().getNavigationBarColor(), statusBarColor);
 
         backgroundAnimation.setEvaluator(new ArgbEvaluator());
         statusBarAnimation.setEvaluator(new ArgbEvaluator());
+        NavBarAnimation.setEvaluator(new ArgbEvaluator());
         findViewById(R.id.header).setBackground(background);
 
         final AnimatorSet animation = new AnimatorSet();
-        animation.playTogether(backgroundAnimation, statusBarAnimation);
-        animation.setDuration(isResumed() ? 200 : 0);
+        animation.playTogether(backgroundAnimation, statusBarAnimation, NavBarAnimation);
+        animation.setDuration(isResumed() ? 800 : 0);
         animation.start();
 
         if (mMsgListAdapter != null) {
