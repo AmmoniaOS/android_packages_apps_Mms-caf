@@ -491,8 +491,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
-            // mDivider.setVisibility(View.VISIBLE);
-            // mTextButton.setVisibility(View.VISIBLE);
+            mDivider.setVisibility(View.VISIBLE);
+            mTextButton.setVisibility(View.VISIBLE);
             // mTextButton.setText(mContext.getString(R.string.speed_dial));
         }
         updateSimIndicatorView(mMessageItem.mPhoneId);
