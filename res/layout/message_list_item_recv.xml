@@ -132,16 +132,15 @@
                 <ImageView
                     android:id="@+id/text_button_divider"
                     android:layout_width="match_parent"
-                    android:layout_height="3dip"
+                    android:layout_height="2dip"
+                    android:visibility="gone"
                     android:background="@android:drawable/divider_horizontal_dark" />
 
-                <TextView
+                <Button
                     android:id="@+id/text_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:visibility="gone" />
 
                 <ViewStub android:id="@+id/mms_layout_view_stub"
                     android:layout="@layout/mms_layout_view"

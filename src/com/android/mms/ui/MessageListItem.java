@@ -147,12 +147,13 @@ public class MessageListItem extends ZoomMessageListItem implements
     private CheckableQuickContactBadge mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
     private ImageView mDivider;
-    private TextView mTextButton;
+    private Button mNextButton;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
     private ImageLoadedCallback mImageLoadedCallback;
     private boolean mMultiRecipients;
     private int mManageMode;
+    CharSequence formattedMessage;
 
     public MessageListItem(Context context) {
         this(context, null);
@@ -190,7 +191,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
         mDivider = (ImageView) findViewById(R.id.text_button_divider);
-        mTextButton = (TextView) findViewById(R.id.text_button);
+        mNextButton = (Button) findViewById(R.id.text_button);
 
         mAvatar.setOverlay(null);
 
@@ -480,7 +481,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         // MessageItem.  Because the MessageItem instances come from a
         // cache (currently of size ~50), the hit rate on avoiding the
         // expensive formatMessage() call is very high.
-        CharSequence formattedMessage = mMessageItem.getCachedFormattedMessage();
+        formattedMessage = mMessageItem.getCachedFormattedMessage();
         if (formattedMessage == null) {
             formattedMessage = formatMessage(mMessageItem,
                                              mMessageItem.mBody,
@@ -491,9 +492,27 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
+        }
+        if (getButtonName(formattedMessage, mContext) != null) {
             mDivider.setVisibility(View.VISIBLE);
-            mTextButton.setVisibility(View.VISIBLE);
-            // mTextButton.setText(mContext.getString(R.string.speed_dial));
+            mNextButton.setVisibility(View.VISIBLE);
+            mNextButton.getBackground().setAlpha(10);
+            mNextButton.setText(getButtonName(formattedMessage, mContext));
+            mNextButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getButtonName(formattedMessage, mContext)
+                          .equals(mContext.getString(R.string.copy_verification))) {
+                        // run copy
+                    } else if (getButtonName(formattedMessage, mContext)
+                          .equals(mContext.getString(R.string.rapid_recharge))) {
+                        // run recharge
+                    } else if (getButtonName(formattedMessage, mContext)
+                          .equals(mContext.getString(R.string.express_query))) {
+                        // run query
+                    }
+               }
+           });
         }
         updateSimIndicatorView(mMessageItem.mPhoneId);
         // Debugging code to put the URI of the image attachment in the body of the list item.
@@ -582,6 +601,19 @@ public class MessageListItem extends ZoomMessageListItem implements
         drawRightStatusIndicator(mMessageItem);
         mBodyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mZoomFontSize);
         requestLayout();
+    }
+
+    public static String getButtonName(CharSequence msg, Context ctx) {
+        String[] name = ctx.getResources().getStringArray(R.array.button_name);
+        for (int i = 0; i < name.length; i++) {
+            String[] button_str = name[i].split(" ");
+            if (msg.toString().contains(button_str[0])) {
+                if (i >= 0) {
+                    return button_str[1] ;
+                }
+            }
+        }
+        return null;
     }
 
     static private class ImageLoadedCallback implements ItemLoadedCallback<ImageLoaded> {
