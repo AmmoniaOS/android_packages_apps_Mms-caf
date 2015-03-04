@@ -28,6 +28,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -503,7 +504,13 @@ public class MessageListItem extends ZoomMessageListItem implements
                 public void onClick(View v) {
                     if (getButtonName(formattedMessage, mContext)
                           .equals(mContext.getString(R.string.copy_verification))) {
-                        // run copy
+                        if (getCode(formattedMessage) != null) {
+                            ClipboardManager c = (ClipboardManager)
+                                     mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                            c.setText(getCode(formattedMessage));
+                            mNextButton.setVisibility(v.GONE);
+                            mDivider.setVisibility(v.GONE);
+                        }
                     } else if (getButtonName(formattedMessage, mContext)
                           .equals(mContext.getString(R.string.rapid_recharge))) {
                         // run recharge
@@ -602,8 +609,19 @@ public class MessageListItem extends ZoomMessageListItem implements
         mBodyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mZoomFontSize);
         requestLayout();
     }
+	
+    private String getCode(CharSequence msg) {
+        Pattern p = Pattern.compile("[0-9\\.]+");
+        Matcher m = p.matcher(msg.toString());
+        while(m.find()) {
+              if(m.group().length() == 6) {
+                 return m.group(); 
+              }
+        } 
+        return null;
+    }
 
-    public static String getButtonName(CharSequence msg, Context ctx) {
+    private String getButtonName(CharSequence msg, Context ctx) {
         String[] name = ctx.getResources().getStringArray(R.array.button_name);
         for (int i = 0; i < name.length; i++) {
             String[] button_str = name[i].split(" ");
