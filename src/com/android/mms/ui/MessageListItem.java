@@ -146,6 +146,8 @@ public class MessageListItem extends ZoomMessageListItem implements
     public View mMessageBlock;
     private CheckableQuickContactBadge mAvatar;
     static private RoundedBitmapDrawable sDefaultContactImage;
+    private ImageView mDivider;
+    private TextView mTextButton;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
     private ImageLoadedCallback mImageLoadedCallback;
@@ -187,6 +189,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         mMessageBlock = findViewById(R.id.message_block);
         mSimMessageAddress = (TextView) findViewById(R.id.sim_message_address);
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
+        mDivider = (ImageView) findViewById(R.id.text_button_divider);
+        mTextButton = (TextView) findViewById(R.id.text_button);
 
         mAvatar.setOverlay(null);
 
@@ -487,6 +491,9 @@ public class MessageListItem extends ZoomMessageListItem implements
         }
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
+            // mDivider.setVisibility(View.VISIBLE);
+            // mTextButton.setVisibility(View.VISIBLE);
+            // mTextButton.setText(mContext.getString(R.string.speed_dial));
         }
         updateSimIndicatorView(mMessageItem.mPhoneId);
         // Debugging code to put the URI of the image attachment in the body of the list item.
