@@ -105,6 +105,8 @@ import com.google.android.mms.pdu.NotificationInd;
 import com.google.android.mms.pdu.PduHeaders;
 import com.google.android.mms.pdu.PduPersister;
 
+import com.android.internal.util.one.OneUtils;
+
 /**
  * This class provides view of a message in the messages list.
  */
@@ -120,6 +122,8 @@ public class MessageListItem extends ZoomMessageListItem implements
     private static final String CANCEL_URI = "canceluri";
     // transparent background
     private static final int ALPHA_TRANSPARENT = 0;
+    // kuaidi100 API
+    private static final String API_URI = "http://m.kuaidi100.com/index_all.html?type";
 
     static final int MSG_LIST_EDIT    = 1;
     static final int MSG_LIST_PLAY    = 2;
@@ -494,29 +498,35 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
         }
-        if (getButtonName(formattedMessage, mContext) != null) {
+        if (getName(formattedMessage, mContext, 1) != null && OneUtils.isSupportLanguage(true)) {
             mDivider.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
             mNextButton.getBackground().setAlpha(10);
-            mNextButton.setText(getButtonName(formattedMessage, mContext));
+            mNextButton.setText(getName(formattedMessage, mContext, 1));
             mNextButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getButtonName(formattedMessage, mContext)
+                    if (getName(formattedMessage, mContext, 1)
                           .equals(mContext.getString(R.string.copy_verification))) {
-                        if (getCode(formattedMessage) != null) {
+                        if (getNumber(formattedMessage, 6) != null) {
                             ClipboardManager c = (ClipboardManager)
                                      mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                            c.setText(getCode(formattedMessage));
+                            c.setText(getNumber(formattedMessage, 6));
                             mNextButton.setVisibility(v.GONE);
                             mDivider.setVisibility(v.GONE);
                         }
-                    } else if (getButtonName(formattedMessage, mContext)
+                    } else if (getName(formattedMessage, mContext, 1)
                           .equals(mContext.getString(R.string.rapid_recharge))) {
                         // run recharge
-                    } else if (getButtonName(formattedMessage, mContext)
+                    } else if (getName(formattedMessage, mContext, 1)
                           .equals(mContext.getString(R.string.express_query))) {
-                        // run query
+                        if (getName(formattedMessage, mContext, 2) != null) {
+                            String OpenUrl = API_URI + "=" + getName(formattedMessage, mContext, 2)
+                                       + "&postid=" + getNumber(formattedMessage, 12);
+                            Uri uri =Uri.parse(OpenUrl);
+                            Intent it = new Intent(Intent.ACTION_VIEW,uri);
+                            mContext.startActivity(it);
+                        }
                     }
                }
            });
@@ -610,26 +620,27 @@ public class MessageListItem extends ZoomMessageListItem implements
         requestLayout();
     }
 	
-    private String getCode(CharSequence msg) {
+    private String getNumber(CharSequence msg, int cnt) {
         Pattern p = Pattern.compile("[0-9\\.]+");
         Matcher m = p.matcher(msg.toString());
         while(m.find()) {
-              if(m.group().length() == 6) {
-                 return m.group(); 
-              }
+          if(m.group().length() == cnt) {
+             return m.group(); 
+          }
         } 
         return null;
     }
 
-    private String getButtonName(CharSequence msg, Context ctx) {
-        String[] name = ctx.getResources().getStringArray(R.array.button_name);
+    private String getName(CharSequence msg, Context ctx, int m) {
+        String[] name = m == 1 ? ctx.getResources().getStringArray(R.array.button_name)
+                     : ctx.getResources().getStringArray(R.array.express_delivery_name);
         for (int i = 0; i < name.length; i++) {
-            String[] button_str = name[i].split(" ");
-            if (msg.toString().contains(button_str[0])) {
-                if (i >= 0) {
-                    return button_str[1] ;
-                }
-            }
+             String[] str = name[i].split(" ");
+             if (msg.toString().contains(str[0])) {
+                 if (i >= 0) {
+                     return str[1] ;
+                 }
+             }
         }
         return null;
     }
