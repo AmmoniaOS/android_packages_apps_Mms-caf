@@ -15,6 +15,5 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="copy_verification">复制验证码</string>
-  <string name="rapid_recharge">快速充值</string>
-  <string name="express_query">查询运单信息</string>
+  <string name="copy_success">复制成功！</string>
 </resources>

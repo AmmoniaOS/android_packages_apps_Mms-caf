@@ -79,6 +79,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.contacts.common.widget.CheckableQuickContactBadge;
 import com.android.mms.LogTag;
@@ -122,8 +123,6 @@ public class MessageListItem extends ZoomMessageListItem implements
     private static final String CANCEL_URI = "canceluri";
     // transparent background
     private static final int ALPHA_TRANSPARENT = 0;
-    // kuaidi100 API
-    private static final String API_URI = "http://m.kuaidi100.com/index_all.html?type";
 
     static final int MSG_LIST_EDIT    = 1;
     static final int MSG_LIST_PLAY    = 2;
@@ -501,7 +500,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (getName(formattedMessage, mContext, 1) != null && OneUtils.isSupportLanguage(true)) {
             mDivider.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
-            mNextButton.getBackground().setAlpha(10);
+            mNextButton.getBackground().setAlpha(0);
             mNextButton.setText(getName(formattedMessage, mContext, 1));
             mNextButton.setOnClickListener(new OnClickListener() {
                 @Override
@@ -512,20 +511,8 @@ public class MessageListItem extends ZoomMessageListItem implements
                             ClipboardManager c = (ClipboardManager)
                                      mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                             c.setText(getNumber(formattedMessage, 6));
-                            mNextButton.setVisibility(v.GONE);
-                            mDivider.setVisibility(v.GONE);
-                        }
-                    } else if (getName(formattedMessage, mContext, 1)
-                          .equals(mContext.getString(R.string.rapid_recharge))) {
-                        // run recharge
-                    } else if (getName(formattedMessage, mContext, 1)
-                          .equals(mContext.getString(R.string.express_query))) {
-                        if (getName(formattedMessage, mContext, 2) != null) {
-                            String OpenUrl = API_URI + "=" + getName(formattedMessage, mContext, 2)
-                                       + "&postid=" + getNumber(formattedMessage, 12);
-                            Uri uri =Uri.parse(OpenUrl);
-                            Intent it = new Intent(Intent.ACTION_VIEW,uri);
-                            mContext.startActivity(it);
+                            Toast.makeText(mContext, mContext.getString(R.string.copy_success),
+                                     Toast.LENGTH_SHORT).show();
                         }
                     }
                }
@@ -631,9 +618,10 @@ public class MessageListItem extends ZoomMessageListItem implements
         return null;
     }
 
-    private String getName(CharSequence msg, Context ctx, int m) {
-        String[] name = m == 1 ? ctx.getResources().getStringArray(R.array.button_name)
-                     : ctx.getResources().getStringArray(R.array.express_delivery_name);
+    private String getName(CharSequence msg, Context ctx/*, int m*/) {
+        /*String[] name = m == 1 ? ctx.getResources().getStringArray(R.array.button_name)
+                     : ctx.getResources().getStringArray(R.array.express_delivery_name);*/
+        String[] name = ctx.getResources().getStringArray(R.array.button_name);
         for (int i = 0; i < name.length; i++) {
              String[] str = name[i].split(" ");
              if (msg.toString().contains(str[0])) {

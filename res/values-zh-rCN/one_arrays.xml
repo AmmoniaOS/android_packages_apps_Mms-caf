@@ -16,13 +16,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="button_name" translatable="false">
         <item>验证码 复制验证码</item>
-        <item>运单 查询运单信息</item>
-        <item>物流 查询运单信息</item>
-        <item>快递 查询运单信息</item>
-        <item>账户余额 快速充值</item>
-    </string-array>
-
-    <string-array name="express_delivery_name" translatable="false">
-        <item>顺丰 顺丰速运</item>
     </string-array>
 </resources>
