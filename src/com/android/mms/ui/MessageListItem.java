@@ -152,6 +152,8 @@ public class MessageListItem extends ZoomMessageListItem implements
     static private RoundedBitmapDrawable sDefaultContactImage;
     private ImageView mDivider;
     private Button mNextButton;
+    private TextView mSignature;
+    private ImageView mSignatureDivider;
     private Presenter mPresenter;
     private int mPosition;      // for debugging
     private ImageLoadedCallback mImageLoadedCallback;
@@ -196,6 +198,8 @@ public class MessageListItem extends ZoomMessageListItem implements
         mMmsLayout = (LinearLayout) findViewById(R.id.mms_layout_view_parent);
         mDivider = (ImageView) findViewById(R.id.text_button_divider);
         mNextButton = (Button) findViewById(R.id.text_button);
+        mSignature = (TextView) findViewById(R.id.text_signature);
+        mSignatureDivider = (ImageView) findViewById(R.id.text_divider);
 
         mAvatar.setOverlay(null);
 
@@ -497,6 +501,15 @@ public class MessageListItem extends ZoomMessageListItem implements
         if (!sameItem || haveLoadedPdu) {
             mBodyTextView.setText(formattedMessage);
         }
+
+        String CustomSignatureLabel = Settings.System.getString(getContext().getContentResolver(),
+                      Settings.System.CUSTOM_SIGNATURE_LABEL);
+        if (!TextUtils.isEmpty(CustomSignatureLabel)) {
+            mSignature.setVisibility(View.VISIBLE);
+            mSignatureDivider.setVisibility(View.VISIBLE);
+            mSignature.setText(CustomSignatureLabel);
+        }
+
         if (getName(formattedMessage, mContext, 1) != null && OneUtils.isSupportLanguage(true)) {
             mDivider.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
@@ -618,7 +631,7 @@ public class MessageListItem extends ZoomMessageListItem implements
         return null;
     }
 
-    private String getName(CharSequence msg, Context ctx/*, int m*/) {
+    private String getName(CharSequence msg, Context ctx, int m) {
         /*String[] name = m == 1 ? ctx.getResources().getStringArray(R.array.button_name)
                      : ctx.getResources().getStringArray(R.array.express_delivery_name);*/
         String[] name = ctx.getResources().getStringArray(R.array.button_name);

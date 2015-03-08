@@ -127,6 +127,19 @@
                         android:textAppearance="@android:style/TextAppearance.Material.Caption" />
                 </LinearLayout>
 
+                <ImageView
+                    android:id="@+id/text_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dip"
+                    android:visibility="gone"
+                    android:background="@android:drawable/divider_horizontal_dark" />
+
+                <TextView
+                    android:id="@+id/text_signature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
                 <ViewStub android:id="@+id/mms_layout_view_stub"
                     android:layout="@layout/mms_layout_view"
                     android:layout_width="wrap_content"
