@@ -33,7 +33,6 @@ public class SignatureText extends TextView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         String CustomSignatureLabel = Settings.System.getString(getContext().getContentResolver(),
                       Settings.System.CUSTOM_SIGNATURE_LABEL);
         if (!TextUtils.isEmpty(CustomSignatureLabel)) {
